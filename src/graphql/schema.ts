@@ -1,7 +1,11 @@
 const typeDefs = `#graphql
     type Query {
-        getUser(id: ID): User
+        getUser(id: ID!): User
         posts:[Post]
+    }
+    
+    type Mutation{
+        updatePost(id: ID, title: String, content: String):Post
     }
     
     type User {
