@@ -1,27 +1,7 @@
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone'
 import typeDefs from "./graphql/schema";
-
-const posts = [
-    {
-        id:1,
-        title: 'The Awakening',
-        content: 'Kate Chopin',
-    },
-    {
-        id:2,
-        title: 'City of Glass',
-        content: 'Paul Auster',
-    },
-];
-
-// Resolvers define the technique for fetching the types defined in the
-// schema. This resolver retrieves books from the "books" array above.
-const resolvers = {
-    Query: {
-        posts: () => posts,
-    },
-};
+import resolvers from "./graphql/resolvers"
 
 // The ApolloServer constructor requires two parameters: your schema
 // definition and your set of resolvers.
