@@ -1,9 +1,10 @@
-import {posts, users, users_posts} from "../../utils/data"
+import {posts, users, users_posts} from "../../utils/data";
+import Post from "../models/Post";
 
 const resolvers = {
     Query: {
-        posts: () => {
-            return posts;
+        posts: async () => {
+            return await Post.find();
         },
 
         getUser: (_parent: any, args: any, _context: any) => {
@@ -38,6 +39,12 @@ const resolvers = {
             } else {
                 return new Error("ID is required")
             }
+        },
+        createPost: async (_parent: any, args: any, _context: any) => {
+            // create new post document
+            const post = new Post(args);
+            //save post document and return the saved document
+            return await post.save();
         }
     }
 }

@@ -5,7 +5,8 @@ const typeDefs = `#graphql
     }
     
     type Mutation{
-        updatePost(id: ID, title: String, content: String):Post
+        updatePost(_id: ID, title: String, content: String):Post
+        createPost(_id: ID, title: String!, content: String):Post
     }
     
     type User {
@@ -16,7 +17,7 @@ const typeDefs = `#graphql
     }
     
     type Post {
-        id: ID!
+        _id: ID!
         title: String!
         content: String!
     }
