@@ -10,7 +10,7 @@ const typeDefs = `#graphql
     }
     
     type User {
-        id: ID!
+        _id: ID!
         username: String!
         email: String!
         posts: [Post]
