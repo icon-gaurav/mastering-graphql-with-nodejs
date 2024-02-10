@@ -1,4 +1,4 @@
-import {posts, users, users_posts} from "../../utils/data";
+import {posts, users, users_posts} from "../utils/data";
 import Post from "../models/Post";
 
 const resolvers = {
