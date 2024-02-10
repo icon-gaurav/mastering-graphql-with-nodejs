@@ -3,6 +3,7 @@ import {startStandaloneServer} from '@apollo/server/standalone'
 import typeDefs from "./graphql/schema";
 import resolvers from "./graphql/resolvers"
 import mongoose from "mongoose";
+import jwt from "jsonwebtoken";
 // The ApolloServer constructor requires two parameters: your schema
 // definition and your set of resolvers.
 const server = new ApolloServer({
@@ -10,11 +11,23 @@ const server = new ApolloServer({
     resolvers,
 });
 
+// jwt validation check middleware
+const jwtValidationMiddleware = (token: string) => {
+    if (token) {
+        return jwt.verify(token?.split(' ')?.[1], "myprivatekey")
+    }
+}
+
 // Passing an ApolloServer instance to the `startStandaloneServer` function:
 //  1. creates an Express app
 //  2. installs your ApolloServer instance as middleware
 //  3. prepares your app to handle incoming requests
-startStandaloneServer(server, {listen: {port: 4000}})
+startStandaloneServer(server, {
+    context: async ({req, res}) => ({
+        user: jwtValidationMiddleware(req?.headers?.authorization as string),
+    }),
+    listen: {port: 4000}
+})
     .then(({url}: any) => {
         console.log(`🚀 Server listening at: ${url}`);
 

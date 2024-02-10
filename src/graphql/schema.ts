@@ -7,10 +7,17 @@ const typeDefs = `#graphql
     type Mutation{
         updatePost(_id: ID, title: String, content: String):Post
         createPost(_id: ID, title: String!, content: String):Post
+        login(email: String!, password: String!):AuthPayload
+        registerUser(email: String!, password: String!, username: String):User
+    }
+    
+    type AuthPayload{
+        token: String
+        user: User
     }
     
     type User {
-        id: ID!
+        _id: ID!
         username: String!
         email: String!
         posts: [Post]
