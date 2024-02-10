@@ -6,8 +6,14 @@ import jwt from 'jsonwebtoken';
 
 const resolvers = {
     Query: {
-        posts: async () => {
-            return await Post.find();
+        posts: async (_parent: any, _args: any, context: any) => {
+            // fetch the user from the context
+            const {user} = context;
+            if (user) {
+                return Post.find();
+            } else {
+                return new Error("Unauthenticated!")
+            }
         },
 
         getUser: (_parent: any, args: any, _context: any) => {
@@ -59,7 +65,10 @@ const resolvers = {
             if (requestedUser && bcrypt.compareSync(password, requestedUser?.password as string)) {
                 // user has provided correct email and password
                 // generate the signed jwt token
-                const token = jwt.sign({user_id:requestedUser?._id, email:requestedUser?.email}, "myprivatekey", {expiresIn: '2h'})
+                const token = jwt.sign({
+                    user_id: requestedUser?._id,
+                    email: requestedUser?.email
+                }, "myprivatekey", {expiresIn: '2h'})
 
                 // return the auth payload
                 return {
