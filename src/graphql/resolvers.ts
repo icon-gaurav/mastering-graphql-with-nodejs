@@ -1,5 +1,8 @@
 import {posts, users, users_posts} from "../utils/data";
 import Post from "../models/Post";
+import User from "../models/User";
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 const resolvers = {
     Query: {
@@ -45,6 +48,38 @@ const resolvers = {
             const post = new Post(args);
             //save post document and return the saved document
             return await post.save();
+        },
+        login: async (_parent: any, args: any, _context: any) => {
+            const {email, password} = args;
+            const requestedUser = await User.findOne({email: email});
+            /*
+                we are using bcrypt to compare 2 passwords as we stored hashed password and not the plain text
+                for security reasons
+            */
+            if (requestedUser && bcrypt.compareSync(password, requestedUser?.password as string)) {
+                // user has provided correct email and password
+                // generate the signed jwt token
+                const token = jwt.sign({user_id:requestedUser?._id, email:requestedUser?.email}, "myprivatekey", {expiresIn: '2h'})
+
+                // return the auth payload
+                return {
+                    token,
+                    user: requestedUser
+                }
+            } else {
+                return new Error('Email or password is incorrect!')
+            }
+        },
+        registerUser: async (_parent: any, args: any) => {
+            const {email, password, username} = args;
+            // we are storing hashed password to the database
+            const newUser = new User(
+                {
+                    email,
+                    password: bcrypt.hashSync(password, bcrypt.genSaltSync(10)),
+                    username: username ?? email
+                })
+            return await newUser.save();
         }
     }
 }
