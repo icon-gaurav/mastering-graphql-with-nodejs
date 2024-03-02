@@ -1,6 +1,8 @@
 const typeDefs = `#graphql
     type Query {
+        """ Get user return user based on user id """
         getUser(id: ID!): User
+        """ posts return list of posts """
         posts:[Post]
     }
     
@@ -17,9 +19,13 @@ const typeDefs = `#graphql
     }
     
     type User {
+        """ Database generated user id """
         _id: ID!
+        """ Username of the user to uniquely identify the user """
         username: String!
+        """ Email address of the user """
         email: String!
+        """ List of posts associated with the user """
         posts: [Post]
     }
     
