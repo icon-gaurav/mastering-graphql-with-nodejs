@@ -3,17 +3,15 @@ import Post from "../models/Post";
 import User from "../models/User";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { PubSub } from 'graphql-subscriptions';
+
+const pubsub = new PubSub();
+
 
 const resolvers = {
     Query: {
         posts: async (_parent: any, _args: any, context: any) => {
-            // fetch the user from the context
-            const {user} = context;
-            if (user) {
-                return Post.find();
-            } else {
-                return new Error("Unauthenticated!")
-            }
+            return Post.find();
         },
 
         getUser: (_parent: any, args: any, _context: any) => {
@@ -53,7 +51,9 @@ const resolvers = {
             // create new post document
             const post = new Post(args);
             //save post document and return the saved document
-            return await post.save();
+            await post.save();
+            await pubsub.publish('POST_CREATED', {postCreated: post});
+            return post;
         },
         login: async (_parent: any, args: any, _context: any) => {
             const {email, password} = args;
@@ -90,6 +90,12 @@ const resolvers = {
                 })
             return await newUser.save();
         }
+    },
+    Subscription:{
+        postCreated: {
+            // More on pubsub below
+            subscribe: () => pubsub.asyncIterator(['POST_CREATED']),
+        },
     }
 }
 

@@ -34,6 +34,10 @@ const typeDefs = `#graphql
         title: String!
         content: String!
     }
+
+    type Subscription {
+        postCreated: Post
+    }
 `;
 
 export default typeDefs;
