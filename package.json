@@ -4,7 +4,9 @@
   "description": "",
   "main": "main.ts",
   "dependencies": {
+    "@apollo/gateway": "^2.10.2",
     "@apollo/server": "^4.9.5",
+    "@apollo/subgraph": "^2.10.2",
     "@types/bcrypt": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.5",
     "abbrev": "^1.1.1",
@@ -54,6 +56,7 @@
     "glob-parent": "^5.1.2",
     "gopd": "^1.0.1",
     "graphql": "^16.8.1",
+    "graphql-tag": "^2.12.6",
     "has-flag": "^3.0.0",
     "has-property-descriptors": "^1.0.1",
     "has-proto": "^1.0.1",
@@ -143,6 +146,12 @@
     "typescript": "^5.3.3"
   },
   "scripts": {
+    "start:order-service": "nodemon src/order-service/main.ts --exec ts-node src/order-service/main.ts -e ts,graphql",
+    "start:product-service": "nodemon src/product-service/main.ts --exec ts-node src/product-service/main.ts -e ts,graphql",
+    "start:user-service": "nodemon src/user-service/main.ts --exec ts-node src/user-service/main.ts -e ts,graphql",
+    "start:services": "concurrently \"npm run start:order-service\" \"npm run start:product-service\" \"npm run start:user-service\"",
+    "start:server": "nodemon src/server.ts --exec ts-node src/server.ts -e ts,graphql",
+    "start:all": "npm run start:services && npm run start:server",
     "start:dev": "npm run build:dev",
     "build:dev": "nodemon src/server.ts --exec ts-node src/server.ts -e ts,graphql"
   },
